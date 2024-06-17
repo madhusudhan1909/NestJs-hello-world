@@ -29,7 +29,8 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
-          EC2_KEY_PAIR: ${{ secrets.EC2_KEY_PAIR }}
         run: |
           echo "Deploying to EC2 instance"
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY_PAIR }} ubuntu@${{ secrets.EC2_PUBLIC_IP }} 'bash -s' < ./deploy-script.sh
+          echo "${{ secrets.EC2_KEY_PAIR }}" > ec2-key.pem
+          chmod 400 ec2-key.pem
+          ssh -o StrictHostKeyChecking=no -i ec2-key.pem ubuntu@${{ secrets.EC2_PUBLIC_IP }} 'bash -s' < ./deploy-script.sh
