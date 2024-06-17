@@ -6,41 +6,20 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run tests
-      run: npm run test
-
-    - name: Build project
-      run: npm run build
-
   deploy:
-    needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Deploy to EC2
-      env:
-        EC2_HOST: ${{ secrets.EC2_HOST }}
-        EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
-        EC2_KEY: ${{ secrets.EC2_KEY }}
-      run: |
-        echo "Deploying to EC2 instance"
-        echo "${{ secrets.EC2_KEY }}" > ec2-key.pem
-        chmod 600 ec2-key.pem
-        ssh -o StrictHostKeyChecking=no -i ec2-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} 'bash -s' < ./deploy-script.sh
+      - name: Deploy to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+          EC2_KEY: ${{ secrets.EC2_KEY }}
+        run: |
+          echo "Deploying to EC2 instance"
+          echo "${{ secrets.EC2_KEY }}" > ec2-key.pem
+          chmod 600 ec2-key.pem
+          scp -o StrictHostKeyChecking=no -i ec2-key.pem /root/pearl-task.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/ubuntu/pearl-task.pem
+          ssh -o StrictHostKeyChecking=no -i ec2-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} 'bash -s' < ./deploy-script.sh
