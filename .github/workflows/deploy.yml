@@ -41,6 +41,6 @@ jobs:
         EC2_KEY: ${{ secrets.EC2_KEY }}
       run: |
         echo "Deploying to EC2 instance"
-        echo -e "${{ secrets.EC2_KEY }}" > pearl-task.pem
-        chmod 600 pearl-task.pem
-        ssh -o StrictHostKeyChecking=no -i pearl-task.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} 'bash -s' < ./deploy-script.sh
+        echo "${{ secrets.EC2_KEY }}" > ec2-key.pem
+        chmod 600 ec2-key.pem
+        ssh -o StrictHostKeyChecking=no -i ec2-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} 'bash -s' < ./deploy-script.sh
