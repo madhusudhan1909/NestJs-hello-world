@@ -19,5 +19,5 @@ sudo systemctl restart hello-world
 
 echo "Deploying to EC2 instance..."
 
-ssh -o StrictHostKeyChecking=no -i C:\MADHU DRIVE\Desktop\New folder\Downloads\pearl-task.pem ubuntu@3.111.144.41 'bash -s' < ./deploy-script.sh
+ssh -o StrictHostKeyChecking=no -i /root/pearl-task.pem ubuntu@3.111.144.41 'bash -s' < ./deploy-script.sh
 
